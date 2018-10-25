@@ -1,0 +1,41 @@
+---
+ - hosts: localhost
+   become: yes
+   tasks:
+     - name: Add Microsoft signature key
+       rpm_key:
+         state: present
+         key: https://packages.microsoft.com/keys/microsoft.asc
+ 
+     - name: Add Microsoft Yum Repositories
+       yum_repository:
+         name: "{{ item.name }}"
+         file: "{{ item.file }}"
+         baseurl: "{{ item.url }}"
+         description: "{{ item.description }}"
+         gpgcheck: "{{ item.gpg }}"
+         gpgkey: "{{ item.gpg_key }}"
+         enabled: yes 
+         state: present
+       loop:
+               - { name: "packages-microsoft-com-prod", description: "packages-microsoft-com-prod", file: microsoft, gpg: yes, gpg_key: "https://packages.microsoft.com/keys/microsoft.asc", url: "https://packages.microsoft.com/rhel/7/prod/" }
+               - { name: microsoft-vscode, description: "VSCode Repo", file: vscode, gpg: yes, gpg_key: "https://packages.microsoft.com/keys/microsoft.asc", url: "https://packages.microsoft.com/yumrepos/vscode" }
+
+     - name: install software
+       dnf:
+         name: "{{ item }}"
+         state: latest
+         update_cache: yes
+       loop:
+         - code
+         - compat-openssl10
+         - powershell
+         - vim
+
+     - name: Download Terraform
+       unarchive:
+         remote_src: yes
+         dest: /usr/local/bin
+         src: "https://releases.hashicorp.com/terraform/0.11.10/terraform_0.11.10_linux_amd64.zip"
+         creates: /usr/local/bin/terraform
+

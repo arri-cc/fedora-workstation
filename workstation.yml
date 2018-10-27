@@ -18,9 +18,38 @@
          enabled: yes 
          state: present
        loop:
-               - { name: "packages-microsoft-com-prod", description: "packages-microsoft-com-prod", file: microsoft, gpg: yes, gpg_key: "https://packages.microsoft.com/keys/microsoft.asc", url: "https://packages.microsoft.com/rhel/7/prod/" }
-               - { name: microsoft-vscode, description: "VSCode Repo", file: vscode, gpg: yes, gpg_key: "https://packages.microsoft.com/keys/microsoft.asc", url: "https://packages.microsoft.com/yumrepos/vscode" }
-
+         - name: "packages-microsoft-com-prod"
+           description: "packages-microsoft-com-prod"
+           file: microsoft
+           gpg: yes
+           gpg_key: "https://packages.microsoft.com/keys/microsoft.asc"
+           url: "https://packages.microsoft.com/rhel/7/prod/"
+         - name: microsoft-vscode
+           description: "VSCode Repo"
+           file: vscode
+           gpg: yes
+           gpg_key: "https://packages.microsoft.com/keys/microsoft.asc"
+           url: "https://packages.microsoft.com/yumrepos/vscode"
+         - name: docker-ce-stable
+           description: docker-ce-stable
+           file: docker
+           gpg: yes
+           gpg_key: "https://download.docker.com/linux/fedora/gpg"
+           url: "https://download.docker.com/linux/fedora/$releasever/$basearch/stable"
+         - name: kubernetes
+           description: kubernetes
+           file: kubernetes
+           gpg: yes
+           gpg_key: "https://packages.cloud.google.com/yum/doc/yum-key.gpg"
+           url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64"
+     
+     # https://groups.google.com/forum/#!msg/opensshunixdev/5FK67SCpPg8/Y_QsxNkQBAAJ
+     - name: Downgrade from openssh 7.8p1 to 7.7p1       
+       yum:
+         name: openssh-clients-7.7p1
+         state: present
+         allow_downgrade: yes
+    
      - name: install software
        dnf:
          name: "{{ item }}"
@@ -29,7 +58,10 @@
        loop:
          - code
          - compat-openssl10
+         - docker-ce
+         - kubectl
          - powershell
+         - libselinux-python
          - vim
 
      - name: Download Terraform
@@ -38,4 +70,18 @@
          dest: /usr/local/bin
          src: "https://releases.hashicorp.com/terraform/0.11.10/terraform_0.11.10_linux_amd64.zip"
          creates: /usr/local/bin/terraform
-
+     
+     - name: Download Minicube
+       get_url:
+         dest: /usr/local/bin/minikube
+         url: "https://storage.googleapis.com/minikube/releases/v0.30.0/minikube-linux-amd64"
+         mode: +x
+ 
+     - name: Install Go
+       unarchive:
+         remote_src: yes
+         dest: /usr/local/go
+         src: "https://dl.google.com/go/go1.11.1.linux-amd64.tar.gz"
+         creates: /usr/local/bin/go
+     
+     

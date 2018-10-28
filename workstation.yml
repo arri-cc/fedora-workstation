@@ -7,7 +7,7 @@
          state: present
          key: https://packages.microsoft.com/keys/microsoft.asc
  
-     - name: Add Microsoft Yum Repositories
+     - name: Add additional yum repositories
        yum_repository:
          name: "{{ item.name }}"
          file: "{{ item.file }}"
@@ -42,23 +42,23 @@
            gpg: yes
            gpg_key: "https://packages.cloud.google.com/yum/doc/yum-key.gpg"
            url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64"
-     
+          
      # https://groups.google.com/forum/#!msg/opensshunixdev/5FK67SCpPg8/Y_QsxNkQBAAJ
      - name: Downgrade from openssh 7.8p1 to 7.7p1       
-       yum:
+       dnf:
          name: openssh-clients-7.7p1
          state: present
          allow_downgrade: yes
     
-     - name: install software
+     - name: install rpm packages
        dnf:
          name: "{{ item }}"
          state: latest
-         update_cache: yes
-       loop:
+         loop:
          - code
          - compat-openssl10
          - docker-ce
+         - dotnet-sdk-2.1
          - kubectl
          - powershell
          - libselinux-python
@@ -69,7 +69,7 @@
          remote_src: yes
          dest: /usr/local/bin
          src: "https://releases.hashicorp.com/terraform/0.11.10/terraform_0.11.10_linux_amd64.zip"
-         creates: /usr/local/bin/terraform
+         #creates: /usr/local/bin/terraform
      
      - name: Download Minicube
        get_url:
@@ -80,8 +80,31 @@
      - name: Install Go
        unarchive:
          remote_src: yes
-         dest: /usr/local/go
+         dest: /usr/local
          src: "https://dl.google.com/go/go1.11.1.linux-amd64.tar.gz"
-         creates: /usr/local/bin/go
+ 
      
+     - name: Install vscode plugins
+       become: no
+       command: "code --install-extension '{{ item }}'"
+       register: vscode_extension_result
+       changed_when: "'already installed' not in vscode_extension_result.stdout" 
+       loop:
+         - cake-build.cake-vscode
+         - DavidAnson.vscode-markdownlint
+         - mauve.terraform
+         - mindginative.terraform-snippets
+         - mohsen1.prettify-json
+         - ms-azuretools.vscode-azureterraform
+         - ms-python.python
+         - ms-vscode.azure-account
+         - ms-vscode.azurecli
+         - ms-vscode.csharp
+         - ms-vscode.Go
+         - ms-vscode.PowerShell
+         - PeterJausovec.vscode-docker
+         - ritwickdey.LiveServer
+         - run-at-scale.terraform-doc-snippets
+         - vscoss.vscode-ansible
+         - zhuangtongfa.Material-theme
      

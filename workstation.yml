@@ -54,7 +54,7 @@
        dnf:
          name: "{{ item }}"
          state: latest
-         loop:
+       loop:
          - code
          - compat-openssl10
          - docker-ce

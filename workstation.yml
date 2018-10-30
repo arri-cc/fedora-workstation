@@ -131,4 +131,13 @@
          - run-at-scale.terraform-doc-snippets
          - vscoss.vscode-ansible
          - zhuangtongfa.Material-theme
-     
+     - name: Upgrade pip
+       pip:
+         name: pip
+         extra_args: --upgrade
+
+     - name: Install pip packages
+       pip:
+         name: "{{ item }}"
+       loop:
+         - pywinrm 

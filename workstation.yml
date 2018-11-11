@@ -116,6 +116,8 @@
        loop:
          - cake-build.cake-vscode
          - DavidAnson.vscode-markdownlint
+         - dsznajder.es7-react-js
+         - eamodio.gitlens
          - mauve.terraform
          - mindginative.terraform-snippets
          - mohsen1.prettify-json
@@ -123,6 +125,7 @@
          - ms-python.python
          - ms-vscode.azure-account
          - ms-vscode.azurecli
+         - ms-azuretools.vscode-azurefunctions
          - ms-vscode.csharp
          - ms-vscode.Go
          - ms-vscode.PowerShell
@@ -131,6 +134,7 @@
          - run-at-scale.terraform-doc-snippets
          - vscoss.vscode-ansible
          - zhuangtongfa.Material-theme
+         - yzhang.markdown-all-in-one
      - name: Upgrade pip
        pip:
          name: pip

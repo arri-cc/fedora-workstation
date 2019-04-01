@@ -1,6 +1,6 @@
 ## Fedora 28 Workstation
 
-This project configures an instance of Fedora 28 as a workstation for my needs.
+This project configures an OSX  workstation for my needs.
 
 to run:
 

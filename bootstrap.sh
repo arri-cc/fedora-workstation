@@ -1,7 +1,4 @@
 #!/bin/bash
-sudo dnf update -y && sudo dnf upgrade -y
-sudo dnf install ansible -y
-mkdir -p ~/_github
-cd ~/_github
-git clone https://github.com/arri-cc/fedora-workstation.git
-ansible-playbook workstation.yml --ask-become-pass
+'/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null'
+brew install ansible
+ansible-playbook workstation.yml
